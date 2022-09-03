@@ -3,7 +3,6 @@ const gameLogic = (() => {
 
   const setCell = (cell, value) => {
     if (board[cell] !== "") return false;
-    console.log("aaaaaaaaaa");
 
     board[cell] = value;
 
@@ -71,8 +70,6 @@ let currentPlayer = 0;
 
 function aaa(cell) {
   const isValid = players[currentPlayer].setChoice(cell);
-
-  console.log({ isValid });
 
   if (isValid === false) return;
 
