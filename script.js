@@ -56,8 +56,8 @@ const Player = sign => {
     if (gameLogic.setCell(idx, sign) === false) return false;
 
     document.querySelector(
-      `.grid > div:nth-child(${idx + 1})`
-    ).innerHTML = `<img src="assets/${sign}.png" />`;
+      `.grid > div:nth-child(${idx + 1}) > img`
+    ).src = `assets/${sign}.png`;
 
     return true;
   };
