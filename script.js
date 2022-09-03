@@ -1,6 +1,8 @@
 const gameLogic = (() => {
   let board = new Array(9).fill("");
 
+  const initialGridHTML = document.querySelector(".grid").innerHTML;
+
   const setCell = (cell, value) => {
     if (board[cell] !== "") return false;
 
@@ -12,17 +14,7 @@ const gameLogic = (() => {
   const resetBoard = () => {
     board = new Array(9).fill("");
 
-    document.querySelector(".grid").innerHTML = `
-      <div></div>
-      <div></div>
-      <div class="no-r-border"></div>
-      <div></div>
-      <div></div>
-      <div class="no-r-border"></div>
-      <div class="no-b-border"></div>
-      <div class="no-b-border"></div>
-      <div class="no-b-border no-r-border"></div>
-    `;
+    document.querySelector(".grid").innerHTML = initialGridHTML;
   };
 
   const checkWin = () => {
