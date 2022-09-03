@@ -15,17 +15,19 @@ body {
 }
 
 .grid {
+  --cell-size: 200px;
+
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: grid;
-  grid-template-columns: repeat(3, 200px);
-  grid-auto-rows: 200px;
+  grid-template-columns: repeat(3, var(--cell-size));
+  grid-auto-rows: var(--cell-size);
   transition: filter 300ms ease-in-out;
 }
 
-.grid > div {
+.grid div {
   border-right: 2px solid black;
   border-bottom: 2px solid black;
   display: flex;
@@ -33,7 +35,7 @@ body {
   justify-content: center;
 }
 
-.grid > div > img {
+.grid img {
   width: 70%;
   aspect-ratio: 1;
   filter: blur(10px);
@@ -44,17 +46,17 @@ body {
   transition-timing-function: ease-in-out;
 }
 
-.grid > div > img.active {
+.grid img.active {
   filter: none;
   opacity: 1;
   transform: none;
 }
 
-.grid > .no-r-border {
+.grid .no-r-border {
   border-right: none;
 }
 
-.grid > .no-b-border {
+.grid .no-b-border {
   border-bottom: none;
 }
 
@@ -74,7 +76,6 @@ body {
   transition-property: filter, opacity;
   transition-duration: 300ms;
   transition-timing-function: ease-in-out;
-  transition-delay: 200ms;
   pointer-events: none;
 }
 

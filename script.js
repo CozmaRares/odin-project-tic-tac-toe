@@ -38,12 +38,14 @@ const gameLogic = (() => {
     });
   };
 
-  return { resetBoard, setCell, checkWin };
+  const checkDraw = () => {
+    return board.every(cell => cell !== "");
+  };
+
+  return { resetBoard, setCell, checkWin, checkDraw };
 })();
 
 const Player = sign => {
-  sign = sign.toUpperCase();
-
   const getSign = () => sign;
 
   const setChoice = idx => {
@@ -61,7 +63,7 @@ const Player = sign => {
   return { getSign, setChoice };
 };
 
-const players = [Player("x"), Player("o")];
+const players = [Player("X"), Player("O")];
 let currentPlayer = 0;
 
 function aaa(cell) {
@@ -69,19 +71,21 @@ function aaa(cell) {
 
   if (isValid === false) return;
 
-  if (gameLogic.checkWin()) {
-    document.querySelector(".overlay p").innerText =
-      players[currentPlayer].getSign() + " wins";
+  if (gameLogic.checkWin())
+    return openOverlay(players[currentPlayer].getSign() + " wins!");
 
-    document.querySelector(".overlay").classList.add("active");
-
-    // push to next frame of the event loop
-    setTimeout(() => document.addEventListener("click", closeOverlay), 1);
-
-    return;
-  }
+  if (gameLogic.checkDraw()) return openOverlay("It's a draw!");
 
   currentPlayer = 1 - currentPlayer;
+}
+
+function openOverlay(text) {
+  document.querySelector(".overlay p").innerText = text;
+
+  document.querySelector(".overlay").classList.add("active");
+
+  // push to next frame of the event loop
+  setTimeout(() => document.addEventListener("click", closeOverlay), 1);
 }
 
 function closeOverlay() {
