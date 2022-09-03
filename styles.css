@@ -14,6 +14,41 @@ body {
   height: 100vh;
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000000b5;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  filter: blur(10px);
+  transition-property: filter, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+  pointer-events: none;
+}
+
+.overlay.active {
+  opacity: 1;
+  filter: none;
+  pointer-events: initial;
+}
+
+.overlay.active + .grid {
+  filter: blur(20px);
+}
+
+.overlay p {
+  font-size: 8em;
+  font-family: "Dancing Script", cursive;
+  color: white;
+}
+
 .grid {
   --cell-size: 200px;
 
@@ -60,37 +95,31 @@ body {
   border-bottom: none;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
+footer {
+  position: fixed;
+  bottom: 0;
   left: 0;
-  background-color: #000000b5;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
+  width: 100%;
+  padding-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+footer a {
+  color: inherit;
+  text-decoration: none;
   display: flex;
-  align-items: center;
   justify-content: center;
-  opacity: 0;
-  filter: blur(10px);
-  transition-property: filter, opacity;
-  transition-duration: 300ms;
-  transition-timing-function: ease-in-out;
-  pointer-events: none;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  margin: 0 auto;
 }
 
-.overlay.active {
-  opacity: 1;
-  filter: none;
-  pointer-events: initial;
+footer a svg {
+  height: 1.2em;
+  transition: transform 300ms ease-in-out;
 }
 
-.overlay.active + .grid {
-  filter: blur(20px);
-}
-
-.overlay p {
-  font-size: 8em;
-  font-family: "Dancing Script", cursive;
-  color: white;
+footer a:hover svg {
+  transform: rotateZ(360deg) scale(1.2);
 }
