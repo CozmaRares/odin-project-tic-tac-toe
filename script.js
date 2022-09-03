@@ -1,7 +1,30 @@
 const gameLogic = (() => {
   let board = new Array(9).fill("");
 
-  const resetBoard = () => (board = new Array(9).fill(""));
+  const setCell = (cell, value) => {
+    if (board[cell] !== "") return false;
+    console.log("aaaaaaaaaa");
+
+    board[cell] = value;
+
+    return true;
+  };
+
+  const resetBoard = () => {
+    board = new Array(9).fill("");
+
+    document.querySelector(".grid").innerHTML = `
+      <div></div>
+      <div></div>
+      <div class="no-r-border"></div>
+      <div></div>
+      <div></div>
+      <div class="no-r-border"></div>
+      <div class="no-b-border"></div>
+      <div class="no-b-border"></div>
+      <div class="no-b-border no-r-border"></div>
+    `;
+  };
 
   const checkWin = () => {
     const winningPositions = [
@@ -24,26 +47,36 @@ const gameLogic = (() => {
     });
   };
 
-  const a = () => {
-    console.log(board[0], board[1], board[2]);
-    console.log(board[3], board[4], board[5]);
-    console.log(board[6], board[7], board[8]);
-  };
-
-  const setCell = (idx, value) => {
-    board[idx] = value;
-    return checkWin();
-  };
-
-  return { resetBoard, setCell, checkWin, a };
+  return { resetBoard, setCell, checkWin };
 })();
 
 const Player = sign => {
+  sign = sign.toUpperCase();
+
   const setChoice = idx => {
-    gameLogic.setCell(idx, sign);
+    if (gameLogic.setCell(idx, sign) === false) return false;
+
+    document.querySelector(
+      `.grid > div:nth-child(${idx + 1})`
+    ).innerHTML = `<img src="assets/${sign}.png" />`;
+
+    return true;
   };
 
   return { setChoice };
 };
 
-const human = Player("X");
+const players = [Player("x"), Player("o")];
+let currentPlayer = 0;
+
+function aaa(cell) {
+  const isValid = players[currentPlayer].setChoice(cell);
+
+  console.log({ isValid });
+
+  if (isValid === false) return;
+
+  console.log("win", gameLogic.checkWin());
+
+  currentPlayer = 1 - currentPlayer;
+}
