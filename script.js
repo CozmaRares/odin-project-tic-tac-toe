@@ -88,3 +88,4 @@ function closeOverlay() {
 function setDifficulty(difficulty) {
   console.log(difficulty);
 }
+
