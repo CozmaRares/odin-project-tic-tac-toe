@@ -6,12 +6,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 body {
-  background-color: #f5f5f5;
+  background-color: #e5e5e5;
   width: 100vw;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .overlay {
@@ -49,13 +55,81 @@ body {
   color: white;
 }
 
+.difficulty {
+  font-size: 2rem;
+  padding-top: 1rem;
+}
+
+.difficulty label {
+  display: block;
+  text-align: center;
+  padding-bottom: 0.5rem;
+}
+
+/* https://codepen.io/silverdrop/pen/OJJREa */
+.custom-select {
+  --border-radius: 20px;
+
+  background-color: white;
+  width: fit-content;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid black;
+  border-radius: var(--border-radius);
+  padding-left: var(--border-radius);
+}
+
+.custom-select select {
+  color: black;
+  font-size: inherit;
+  padding: 5px;
+  padding-right: 2.5em;
+  border-radius: var(--border-radius);
+  text-overflow: "";
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.custom-select::before,
+.custom-select::after {
+  position: absolute;
+  pointer-events: none;
+}
+
+.custom-select::after {
+  content: "\25BC";
+  height: 1em;
+  font-size: 0.625em;
+  line-height: 1;
+  right: 1.2em;
+  top: 50%;
+  margin-top: -0.5em;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.custom-select::before {
+  content: "";
+  width: 2em;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
 .grid {
   --cell-size: 200px;
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: grid;
   grid-template-columns: repeat(3, var(--cell-size));
   grid-auto-rows: var(--cell-size);
@@ -95,7 +169,23 @@ body {
   border-bottom: none;
 }
 
+.restart {
+  border: 1px solid black;
+  font-size: 2em;
+  width: fit-content;
+  padding: 0.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 3rem;
+}
+
+.restart:hover {
+  color: white;
+  background-color: black;
+}
+
 footer {
+  height: 2rem;
   position: fixed;
   bottom: 0;
   left: 0;

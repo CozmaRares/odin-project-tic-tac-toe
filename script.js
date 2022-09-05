@@ -1,21 +1,3 @@
-let board = new Array(9).fill("");
-
-const setCell = (cell, value) => {
-  if (board[cell] !== "") return false;
-
-  board[cell] = value;
-
-  return true;
-};
-
-const resetBoard = () => {
-  board = new Array(9).fill("");
-
-  document
-    .querySelectorAll(".grid img")
-    .forEach(img => img.classList.remove("active"));
-};
-
 const winningPositions = [
   [0, 1, 2],
   [3, 4, 5],
@@ -27,7 +9,30 @@ const winningPositions = [
   [2, 4, 6]
 ];
 
-const checkWin = () => {
+const playerSigns = ["X", "O"];
+let currentPlayer = 0;
+
+let board = new Array(9).fill("");
+
+function setCell(cell, value) {
+  if (board[cell] !== "") return false;
+
+  board[cell] = value;
+
+  return true;
+}
+
+function resetBoard() {
+  currentPlayer = 0;
+
+  board = new Array(9).fill("");
+
+  document
+    .querySelectorAll(".grid img")
+    .forEach(img => img.classList.remove("active"));
+}
+
+function checkWin() {
   return winningPositions.some(position => {
     const check = board[position[0]];
 
@@ -35,13 +40,13 @@ const checkWin = () => {
 
     return position.every(cell => board[cell] === check);
   });
-};
+}
 
-const checkDraw = () => {
+function checkDraw() {
   return board.every(cell => cell !== "");
-};
+}
 
-const setPlayerChoice = (idx, sign) => {
+function setPlayerChoice(idx, sign) {
   if (setCell(idx, sign) === false) return false;
 
   const img = document.querySelector(`.grid > div:nth-child(${idx + 1}) > img`);
@@ -49,13 +54,10 @@ const setPlayerChoice = (idx, sign) => {
   img.classList.add("active");
 
   return true;
-};
-
-const players = ["X", "O"];
-let currentPlayer = 0;
+}
 
 function cellClicked(cell) {
-  const currentPlayerSign = players[currentPlayer];
+  const currentPlayerSign = playerSigns[currentPlayer];
 
   const isValid = setPlayerChoice(cell, currentPlayerSign);
 
@@ -69,18 +71,20 @@ function cellClicked(cell) {
 }
 
 function openOverlay(text) {
-  currentPlayer = 0;
-
   document.querySelector(".overlay p").innerText = text;
 
   document.querySelector(".overlay").classList.add("active");
 
   // push to next frame of the event loop
-  setTimeout(() => document.addEventListener("click", closeOverlay), 1);
+  setTimeout(() => document.addEventListener("mousedown", closeOverlay), 1);
 }
 
 function closeOverlay() {
   document.querySelector(".overlay").classList.remove("active");
-  document.removeEventListener("click", closeOverlay);
+  document.removeEventListener("mousedown", closeOverlay);
   resetBoard();
+}
+
+function setDifficulty(difficulty) {
+  console.log(difficulty);
 }
