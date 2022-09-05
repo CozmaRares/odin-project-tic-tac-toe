@@ -55,11 +55,44 @@ body {
   top: 50%;
   left: 25%;
   transform: translate(-100%, -50%);
+  font-size: 2rem;
+}
+
+.enable {
+  width: fit-content;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.enable input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid black;
+  width: 1.5em;
+  aspect-ratio: 1;
+}
+
+.enable input:checked {
+  position: relative;
+  border: 1px solid green;
+}
+
+.enable input:checked:after {
+  content: "✔";
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* color: #99a1a7; */
 }
 
 .difficulty {
-  font-size: 2rem;
-  padding-top: 1rem;
+  margin: 1rem 0;
 }
 
 .difficulty label {
@@ -131,12 +164,11 @@ body {
 
 .restart {
   border: 1px solid black;
-  font-size: 2em;
   width: fit-content;
   padding: 0.5rem;
   border-radius: 10px;
   cursor: pointer;
-  margin: 1rem auto;
+  margin: 0 auto;
 }
 
 .restart:hover {
