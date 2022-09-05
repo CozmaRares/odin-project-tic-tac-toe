@@ -66,7 +66,7 @@ const Player = sign => {
 const players = [Player("X"), Player("O")];
 let currentPlayer = 0;
 
-function aaa(cell) {
+function cellClicked(cell) {
   const isValid = players[currentPlayer].setChoice(cell);
 
   if (isValid === false) return;
