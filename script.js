@@ -41,34 +41,27 @@ const checkDraw = () => {
   return board.every(cell => cell !== "");
 };
 
-const Player = sign => {
-  const getSign = () => sign;
+const setPlayerChoice = (idx, sign) => {
+  if (setCell(idx, sign) === false) return false;
 
-  const setChoice = idx => {
-    if (setCell(idx, sign) === false) return false;
+  const img = document.querySelector(`.grid > div:nth-child(${idx + 1}) > img`);
+  img.src = `assets/${sign}.png`;
+  img.classList.add("active");
 
-    const img = document.querySelector(
-      `.grid > div:nth-child(${idx + 1}) > img`
-    );
-    img.src = `assets/${sign}.png`;
-    img.classList.add("active");
-
-    return true;
-  };
-
-  return { getSign, setChoice };
+  return true;
 };
 
-const players = [Player("X"), Player("O")];
+const players = ["X", "O"];
 let currentPlayer = 0;
 
 function cellClicked(cell) {
-  const isValid = players[currentPlayer].setChoice(cell);
+  const currentPlayerSign = players[currentPlayer];
+
+  const isValid = setPlayerChoice(cell, currentPlayerSign);
 
   if (isValid === false) return;
 
-  if (checkWin())
-    return openOverlay(players[currentPlayer].getSign() + " wins!");
+  if (checkWin()) return openOverlay(currentPlayerSign + " wins!");
 
   if (checkDraw()) return openOverlay("It's a draw!");
 
