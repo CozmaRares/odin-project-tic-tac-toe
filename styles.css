@@ -214,7 +214,7 @@ body {
   border-right: none;
 }
 
-.grid div:nth-child(n + 6) {
+.grid div:nth-child(n + 7) {
   border-bottom: none;
 }
 
