@@ -9,8 +9,14 @@
   user-select: none;
 }
 
+:root {
+  --bg: #e5e5e5;
+  --cell-size: 200px;
+  --mark-size: calc(var(--cell-size) * 0.8);
+}
+
 body {
-  background-color: #e5e5e5;
+  background-color: var(--bg);
   width: 100vw;
   height: 100vh;
 }
@@ -177,8 +183,6 @@ body {
 }
 
 .grid {
-  --cell-size: 200px;
-
   position: absolute;
   top: 50%;
   left: 50%;
@@ -190,36 +194,82 @@ body {
 }
 
 .grid div {
-  border-right: 2px solid black;
-  border-bottom: 2px solid black;
+  border: 2px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  --mark-color: black;
 }
 
-.grid img {
-  width: 70%;
-  aspect-ratio: 1;
-  filter: blur(10px);
-  opacity: 0;
-  transform: scale(2);
-  transition-property: filter, opacity, transform;
-  transition-duration: 300ms;
-  transition-timing-function: ease-in-out;
+.grid div:nth-child(-n + 3) {
+  border-top: none;
 }
 
-.grid img.active {
-  filter: none;
-  opacity: 1;
-  transform: none;
+.grid div:nth-child(3n + 1) {
+  border-left: none;
 }
 
-.grid .no-r-border {
+.grid div:nth-child(3n + 3) {
   border-right: none;
 }
 
-.grid .no-b-border {
+.grid div:nth-child(n + 6) {
   border-bottom: none;
+}
+
+.grid div:not(.x, .o) {
+  --mark-color: #909090;
+  cursor: pointer;
+}
+
+.grid div::before,
+.grid div::after {
+  transition: background-color 300ms ease-in-out;
+}
+
+.grid .x::before,
+.grid .x::after,
+.grid.x div:not(.x, .o):hover::before,
+.grid.x div:not(.x, .o):hover::after {
+  position: absolute;
+  content: "";
+  width: calc(var(--mark-size) * 0.15);
+  height: var(--mark-size);
+  background-color: var(--mark-color);
+}
+
+.grid .x::before,
+.grid.x div:not(.x, .o):hover::before {
+  transform: rotateZ(-45deg);
+}
+
+.grid .x::after,
+.grid.x div:not(.x, .o):hover::after {
+  transform: rotateZ(45deg);
+}
+
+.grid .o::before,
+.grid .o::after,
+.grid.o div:not(.x, .o):hover::before,
+.grid.o div:not(.x, .o):hover::after {
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+  width: var(--size);
+  height: var(--size);
+}
+
+.grid .o::before,
+.grid.o div:not(.x, .o):hover::before {
+  --size: var(--mark-size);
+  background-color: var(--mark-color);
+}
+
+.grid .o::after,
+.grid.o div:not(.x, .o):hover::after {
+  --size: calc(var(--mark-size) * 0.7);
+  background-color: var(--bg);
 }
 
 footer {

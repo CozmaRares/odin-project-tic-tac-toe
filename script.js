@@ -9,17 +9,17 @@ const winningPositions = [
   [2, 4, 6]
 ];
 
-const playerSigns = ["X", "O"];
+const playerSigns = ["x", "o"];
 let currentPlayer = 0;
 
 let board = new Array(9).fill("");
 
 function setCell(cell, value) {
-  if (board[cell] !== "") return false;
-
   board[cell] = value;
+}
 
-  return true;
+function isCellFilled(cell) {
+  return board[cell] !== "";
 }
 
 function resetBoard() {
@@ -27,9 +27,7 @@ function resetBoard() {
 
   board = new Array(9).fill("");
 
-  document
-    .querySelectorAll(".grid img")
-    .forEach(img => img.classList.remove("active"));
+  document.querySelectorAll(".grid div").forEach(div => (div.className = ""));
 }
 
 function checkWin() {
@@ -47,27 +45,34 @@ function checkDraw() {
 }
 
 function setPlayerChoice(idx, sign) {
-  if (setCell(idx, sign) === false) return false;
+  setCell(idx, sign);
 
-  const img = document.querySelector(`.grid > div:nth-child(${idx + 1}) > img`);
-  img.src = `assets/${sign}.png`;
-  img.classList.add("active");
-
-  return true;
+  document
+    .querySelector(`.grid > div:nth-child(${idx + 1})`)
+    .classList.add(sign);
 }
 
 function cellClicked(cell) {
   const currentPlayerSign = playerSigns[currentPlayer];
 
-  const isValid = setPlayerChoice(cell, currentPlayerSign);
+  if (isCellFilled(cell)) return;
 
-  if (isValid === false) return;
+  setPlayerChoice(cell, currentPlayerSign);
 
-  if (checkWin()) return openOverlay(currentPlayerSign + " wins!");
+  console.log(checkWin());
+
+  if (checkWin())
+    return openOverlay(currentPlayerSign.toUpperCase() + " wins!");
 
   if (checkDraw()) return openOverlay("It's a draw!");
 
+  const grid = document.querySelector(".grid");
+
+  grid.classList.remove(currentPlayerSign);
+
   currentPlayer = 1 - currentPlayer;
+
+  grid.classList.add(playerSigns[currentPlayer]);
 }
 
 function openOverlay(text) {
