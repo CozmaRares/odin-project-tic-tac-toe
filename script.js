@@ -89,3 +89,6 @@ function setDifficulty(difficulty) {
   console.log(difficulty);
 }
 
+function enableAI(enable) {
+  console.log(enable);
+}
