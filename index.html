@@ -29,13 +29,27 @@
             id="difficulty"
             onchange="setDifficulty(this.value)"
           >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-            <option value="impossible">Impossible</option>
+            <option value="0">Easy</option>
+            <option value="50">Medium</option>
+            <option value="90">Hard</option>
+            <option value="100">Impossible</option>
           </select>
         </div>
       </div>
+      <div class="sign">
+        <label for="player-sign">Set Player Sign</label>
+        <div class="custom-select">
+          <select
+            name="player-sign"
+            id="player-sign"
+            onchange="setPlayerSign(this.value)"
+          >
+            <option value="x">X</option>
+            <option value="o">O</option>
+          </select>
+        </div>
+      </div>
+
       <div class="restart" onmousedown="resetBoard()">Restart</div>
     </div>
     <div class="grid x">

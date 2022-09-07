@@ -98,10 +98,17 @@ body {
 }
 
 .difficulty {
-  margin: 1rem 0;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.difficulty label {
+.sign {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.difficulty label,
+.sign label {
   display: block;
   text-align: center;
   padding-bottom: 0.5rem;
@@ -112,21 +119,23 @@ body {
   --border-radius: 20px;
 
   background-color: white;
-  width: fit-content;
+  width: 100%;
+  min-width: fit-content;
   position: relative;
   display: inline-block;
   vertical-align: middle;
   border: 1px solid black;
   border-radius: var(--border-radius);
-  padding-left: var(--border-radius);
 }
 
 .custom-select select {
+  width: 100%;
   color: black;
   font-size: inherit;
   padding: 5px;
   padding-right: 2.5em;
   border-radius: var(--border-radius);
+  padding-left: var(--border-radius);
   text-overflow: "";
   -webkit-appearance: none;
   -moz-appearance: none;

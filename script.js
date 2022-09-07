@@ -9,26 +9,26 @@ const winningPositions = [
   [2, 4, 6]
 ];
 
-const playerSigns = ["x", "o"];
+const playerOrder = ["x", "o"];
 let currentPlayer = 0;
 
-let board = new Array(9).fill("");
+let gameBoard = new Array(9).fill("");
 
-let isAIEnabled = false,
-  AIFunction;
+let isAIenabled = false,
+  AIaccuracy = 0;
 
 let playerSign = "x",
-  AISign = "o";
+  AIsign = "o";
 
 function setCell(cell, value) {
-  board[cell] = value;
+  gameBoard[cell] = value;
 }
 
 function isCellFilled(cell) {
-  return board[cell] !== "";
+  return gameBoard[cell] !== "";
 }
 
-function getEmptyCells() {
+function getEmptyCells(board) {
   const emptyCells = [];
 
   board.forEach((cell, idx) => {
@@ -41,13 +41,25 @@ function getEmptyCells() {
 function resetBoard() {
   currentPlayer = 0;
 
-  board = new Array(9).fill("");
+  gameBoard = new Array(9).fill("");
 
   document.querySelectorAll(".grid div").forEach(div => (div.className = ""));
-  document.querySelector(".grid").className = "grid x";
+
+  const grid = document.querySelector(".grid");
+
+  grid.className = "grid";
+
+  if (isAIenabled === false || AIsign !== playerOrder[0])
+    return (grid.className += " " + playerOrder[0]);
+
+  grid.className += " " + playerOrder[1];
+
+  setAIchoice();
+
+  if (checkEndGame(gameBoard, AIsign)) return;
 }
 
-function checkWin() {
+function checkWin(board) {
   return winningPositions.some(position => {
     const check = board[position[0]];
 
@@ -57,20 +69,24 @@ function checkWin() {
   });
 }
 
-function checkDraw() {
+function checkDraw(board) {
   return board.every(cell => cell !== "");
 }
 
-function checkEndGame(sign) {
+function checkEndGame(board, sign) {
   let overlayMessage = "";
 
-  if (checkWin()) overlayMessage = sign.toUpperCase() + " wins!";
-  else if (checkDraw()) overlayMessage = "It's a draw!";
+  if (checkWin(board)) overlayMessage = sign.toUpperCase() + " wins!";
+  else if (checkDraw(board)) overlayMessage = "It's a draw!";
 
   if (overlayMessage === "") return false;
 
   openOverlay(overlayMessage);
   return true;
+}
+
+function setAIchoice() {
+  setPlayerChoice(computeAIchoice(), AIsign);
 }
 
 function setPlayerChoice(idx, sign) {
@@ -82,7 +98,7 @@ function setPlayerChoice(idx, sign) {
 }
 
 function cellClicked(cell) {
-  if (isAIEnabled) handleAI(cell);
+  if (isAIenabled) handleAI(cell);
   else handlePlayers(cell);
 }
 
@@ -91,29 +107,26 @@ function handleAI(cell) {
 
   setPlayerChoice(cell, playerSign);
 
-  if (checkEndGame(playerSign)) return;
+  if (checkEndGame(gameBoard, playerSign)) return;
 
-  setPlayerChoice(AIFunction(), AISign);
+  setAIchoice();
 
-  if (checkEndGame(AISign)) return;
+  if (checkEndGame(gameBoard, AIsign)) return;
 }
 
 function handlePlayers(cell) {
-  const currentPlayerSign = playerSigns[currentPlayer];
+  const currentPlayerSign = playerOrder[currentPlayer];
 
   if (isCellFilled(cell)) return;
 
   setPlayerChoice(cell, currentPlayerSign);
 
-  if (checkEndGame(currentPlayerSign)) return;
+  if (checkEndGame(gameBoard, currentPlayerSign)) return;
 
   const grid = document.querySelector(".grid");
-
   grid.classList.remove(currentPlayerSign);
-
   currentPlayer = 1 - currentPlayer;
-
-  grid.classList.add(playerSigns[currentPlayer]);
+  grid.classList.add(playerOrder[currentPlayer]);
 }
 
 function openOverlay(text) {
@@ -132,33 +145,80 @@ function closeOverlay() {
 }
 
 function setDifficulty(difficulty) {
-  AIFunction = window[difficulty];
+  AIaccuracy = parseInt(difficulty);
 
   resetBoard();
 }
 
 function enableAI(enable) {
-  isAIEnabled = enable;
+  isAIenabled = enable;
 
   resetBoard();
 }
 
-function easy() {
-  const emptyCells = getEmptyCells();
+function randomChoice() {
+  const emptyCells = getEmptyCells(gameBoard);
 
   return emptyCells[Math.floor(Math.random() * emptyCells.length)];
 }
 
-function medium() {
-  console.log("medium");
+function setPlayerSign(sign) {
+  playerSign = sign;
+
+  AIsign = sign === playerOrder[0] ? playerOrder[1] : playerOrder[0];
+
+  resetBoard();
 }
 
-function hard() {
-  console.log("hard");
-}
+function computeAIchoice() {
+  const value = Math.random() * 100;
 
-function impossible() {
-  console.log("impossible");
-}
+  if (value > AIaccuracy) return randomChoice();
 
-AIFunction = easy;
+  const boardCopy = [...gameBoard];
+
+  const signs = [AIsign, playerSign];
+
+  const minmax = (signIdx, depth) => {
+    depth++;
+
+    const emptyCells = getEmptyCells(boardCopy);
+
+    const scores = emptyCells.map(cell => {
+      let score = -depth,
+        stop = false;
+
+      boardCopy[cell] = signs[signIdx];
+
+      if (checkWin(boardCopy)) {
+        score += 10;
+        stop = true;
+      } else if (checkDraw(boardCopy)) stop = true;
+
+      if (stop) {
+        // if it isn't ai's turn
+        if (signIdx !== 0) score *= -1;
+
+        boardCopy[cell] = "";
+
+        return { score, cell };
+      }
+
+      const best = minmax(1 - signIdx, depth);
+      boardCopy[cell] = "";
+      return best;
+    });
+
+    const compare = signIdx === 0 ? (a, b) => a > b : (a, b) => a < b;
+
+    let best = scores[0];
+
+    for (let i = 1; i < scores.length; i++)
+      if (compare(best.score, scores[i].score)) best = scores[i];
+
+    return best;
+  };
+
+  return minmax(0, -1).cell;
+  // return randomChoice();
+}
