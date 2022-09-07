@@ -17,7 +17,7 @@ let gameBoard = new Array(9).fill("");
 let isAIenabled = false,
   AIaccuracy = 0;
 
-let playerSign = "x",
+let userSign = "x",
   AIsign = "o";
 
 function setCell(cell, value) {
@@ -54,9 +54,7 @@ function resetBoard() {
 
   grid.className += " " + playerOrder[1];
 
-  setAIchoice();
-
-  if (checkEndGame(gameBoard, AIsign)) return;
+  setTimeout(() => setPlayerChoice(computeAIchoice(), AIsign), 350);
 }
 
 function checkWin(board) {
@@ -85,10 +83,6 @@ function checkEndGame(board, sign) {
   return true;
 }
 
-function setAIchoice() {
-  setPlayerChoice(computeAIchoice(), AIsign);
-}
-
 function setPlayerChoice(idx, sign) {
   setCell(idx, sign);
 
@@ -105,11 +99,11 @@ function cellClicked(cell) {
 function handleAI(cell) {
   if (isCellFilled(cell)) return;
 
-  setPlayerChoice(cell, playerSign);
+  setPlayerChoice(cell, userSign);
 
-  if (checkEndGame(gameBoard, playerSign)) return;
+  if (checkEndGame(gameBoard, userSign)) return;
 
-  setAIchoice();
+  setPlayerChoice(computeAIchoice(), AIsign);
 
   if (checkEndGame(gameBoard, AIsign)) return;
 }
@@ -163,7 +157,7 @@ function randomChoice() {
 }
 
 function setPlayerSign(sign) {
-  playerSign = sign;
+  userSign = sign;
 
   AIsign = sign === playerOrder[0] ? playerOrder[1] : playerOrder[0];
 
@@ -175,50 +169,32 @@ function computeAIchoice() {
 
   if (value > AIaccuracy) return randomChoice();
 
-  const boardCopy = [...gameBoard];
+  const board = [...gameBoard];
 
-  const signs = [AIsign, playerSign];
+  const signs = [AIsign, userSign];
 
   const minmax = (signIdx, depth) => {
+    if (checkWin(board))
+      // the deeper the win is, the smaller the score is
+      return { score: signIdx === 1 ? 10 - depth : depth - 10 };
+    else if (checkDraw(board)) return { score: 0 };
+
     depth++;
 
-    const emptyCells = getEmptyCells(boardCopy);
-
-    const scores = emptyCells.map(cell => {
-      let score = -depth,
-        stop = false;
-
-      boardCopy[cell] = signs[signIdx];
-
-      if (checkWin(boardCopy)) {
-        score += 10;
-        stop = true;
-      } else if (checkDraw(boardCopy)) stop = true;
-
-      if (stop) {
-        // if it isn't ai's turn
-        if (signIdx !== 0) score *= -1;
-
-        boardCopy[cell] = "";
-
-        return { score, cell };
-      }
-
-      const best = minmax(1 - signIdx, depth);
-      boardCopy[cell] = "";
-      return best;
+    const moves = getEmptyCells(board).map(cell => {
+      board[cell] = signs[signIdx];
+      const score = minmax(1 - signIdx, depth).score;
+      board[cell] = "";
+      return { score, cell };
     });
 
-    const compare = signIdx === 0 ? (a, b) => a > b : (a, b) => a < b;
+    const compare = signIdx === 0 ? (a, b) => a < b : (a, b) => a > b;
 
-    let best = scores[0];
-
-    for (let i = 1; i < scores.length; i++)
-      if (compare(best.score, scores[i].score)) best = scores[i];
-
-    return best;
+    return moves.reduce((best, move) => {
+      if (compare(best.score, move.score)) return move;
+      return best;
+    }, moves[0]);
   };
 
   return minmax(0, -1).cell;
-  // return randomChoice();
 }
