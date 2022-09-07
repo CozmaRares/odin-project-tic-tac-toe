@@ -223,11 +223,6 @@ body {
   cursor: pointer;
 }
 
-.grid div::before,
-.grid div::after {
-  transition: background-color 300ms ease-in-out;
-}
-
 .grid .x::before,
 .grid .x::after,
 .grid.x div:not(.x, .o):hover::before,

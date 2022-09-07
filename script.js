@@ -14,6 +14,12 @@ let currentPlayer = 0;
 
 let board = new Array(9).fill("");
 
+let isAIEnabled = false,
+  AIFunction;
+
+let playerSign = "x",
+  AISign = "o";
+
 function setCell(cell, value) {
   board[cell] = value;
 }
@@ -22,12 +28,23 @@ function isCellFilled(cell) {
   return board[cell] !== "";
 }
 
+function getEmptyCells() {
+  const emptyCells = [];
+
+  board.forEach((cell, idx) => {
+    if (cell === "") emptyCells.push(idx);
+  });
+
+  return emptyCells;
+}
+
 function resetBoard() {
   currentPlayer = 0;
 
   board = new Array(9).fill("");
 
   document.querySelectorAll(".grid div").forEach(div => (div.className = ""));
+  document.querySelector(".grid").className = "grid x";
 }
 
 function checkWin() {
@@ -44,6 +61,18 @@ function checkDraw() {
   return board.every(cell => cell !== "");
 }
 
+function checkEndGame(sign) {
+  let overlayMessage = "";
+
+  if (checkWin()) overlayMessage = sign.toUpperCase() + " wins!";
+  else if (checkDraw()) overlayMessage = "It's a draw!";
+
+  if (overlayMessage === "") return false;
+
+  openOverlay(overlayMessage);
+  return true;
+}
+
 function setPlayerChoice(idx, sign) {
   setCell(idx, sign);
 
@@ -53,18 +82,30 @@ function setPlayerChoice(idx, sign) {
 }
 
 function cellClicked(cell) {
+  if (isAIEnabled) handleAI(cell);
+  else handlePlayers(cell);
+}
+
+function handleAI(cell) {
+  if (isCellFilled(cell)) return;
+
+  setPlayerChoice(cell, playerSign);
+
+  if (checkEndGame(playerSign)) return;
+
+  setPlayerChoice(AIFunction(), AISign);
+
+  if (checkEndGame(AISign)) return;
+}
+
+function handlePlayers(cell) {
   const currentPlayerSign = playerSigns[currentPlayer];
 
   if (isCellFilled(cell)) return;
 
   setPlayerChoice(cell, currentPlayerSign);
 
-  console.log(checkWin());
-
-  if (checkWin())
-    return openOverlay(currentPlayerSign.toUpperCase() + " wins!");
-
-  if (checkDraw()) return openOverlay("It's a draw!");
+  if (checkEndGame(currentPlayerSign)) return;
 
   const grid = document.querySelector(".grid");
 
@@ -91,9 +132,33 @@ function closeOverlay() {
 }
 
 function setDifficulty(difficulty) {
-  console.log(difficulty);
+  AIFunction = window[difficulty];
+
+  resetBoard();
 }
 
 function enableAI(enable) {
-  console.log(enable);
+  isAIEnabled = enable;
+
+  resetBoard();
 }
+
+function easy() {
+  const emptyCells = getEmptyCells();
+
+  return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+}
+
+function medium() {
+  console.log("medium");
+}
+
+function hard() {
+  console.log("hard");
+}
+
+function impossible() {
+  console.log("impossible");
+}
+
+AIFunction = easy;
